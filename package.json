@@ -4,8 +4,12 @@
   "description": "A small, dependency-free lucky draw engine for web, mini apps, and Node.js.",
   "type": "module",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "exports": {
-    ".": "./src/index.js"
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
   },
   "scripts": {
     "test": "node --test"
@@ -15,7 +19,8 @@
     "lottery",
     "raffle",
     "weighted-random",
-    "miniapp"
+    "miniapp",
+    "audit"
   ],
   "author": "",
   "license": "MIT",

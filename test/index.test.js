@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { createSeededRandom, drawBatch, drawOne, validatePrizes } from "../src/index.js";
+import {
+  createAuditSnapshot,
+  createFingerprint,
+  createSeededRandom,
+  drawBatch,
+  drawOne,
+  stableStringify,
+  validatePrizes
+} from "../src/index.js";
 
 describe("lucky-draw-kit", () => {
   it("validates prize input", () => {
@@ -57,5 +65,30 @@ describe("lucky-draw-kit", () => {
       assert.ok(value >= 0);
       assert.ok(value < 1);
     }
+  });
+
+  it("creates stable audit snapshots", () => {
+    const drawResult = drawBatch({
+      seed: "audit-demo",
+      prizes: [{ id: "coupon", name: "Coupon", weight: 1, stock: 2 }],
+      participants: [{ id: "u1" }, { id: "u2" }]
+    });
+
+    const first = createAuditSnapshot(drawResult, {
+      eventId: "event_001",
+      generatedAt: "2026-06-05T00:00:00.000Z"
+    });
+    const second = createAuditSnapshot(drawResult, {
+      eventId: "event_001",
+      generatedAt: "2026-06-05T00:00:00.000Z"
+    });
+
+    assert.equal(first.fingerprint, second.fingerprint);
+    assert.equal(first.recordCount, 2);
+  });
+
+  it("stable stringifies object keys", () => {
+    assert.equal(stableStringify({ b: 1, a: 2 }), "{\"a\":2,\"b\":1}");
+    assert.equal(createFingerprint({ b: 1, a: 2 }), createFingerprint({ a: 2, b: 1 }));
   });
 });

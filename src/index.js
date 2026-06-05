@@ -124,6 +124,44 @@ export function drawBatch({ prizes, participants, seed, maxWinsPerUser = 1 }) {
   };
 }
 
+export function createAuditSnapshot(drawResult, metadata = {}) {
+  if (!drawResult || typeof drawResult !== "object") {
+    throw new TypeError("drawResult must be an object returned by drawBatch");
+  }
+
+  const snapshot = {
+    version: "lucky-draw-kit/audit-v1",
+    generatedAt: metadata.generatedAt ?? new Date().toISOString(),
+    eventId: metadata.eventId ?? null,
+    operator: metadata.operator ?? null,
+    seed: drawResult.seed,
+    recordCount: Array.isArray(drawResult.records) ? drawResult.records.length : 0,
+    records: drawResult.records ?? [],
+    remainingPrizes: drawResult.remainingPrizes ?? []
+  };
+
+  return {
+    ...snapshot,
+    fingerprint: createFingerprint(snapshot)
+  };
+}
+
+export function createFingerprint(value) {
+  const text = stableStringify(value);
+  let hash = 2166136261;
+
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return `fnv1a32:${(hash >>> 0).toString(16).padStart(8, "0")}`;
+}
+
+export function stableStringify(value) {
+  return JSON.stringify(sortValue(value));
+}
+
 function normalizeSeed(seed) {
   const text = String(seed);
   let hash = 2166136261;
@@ -143,4 +181,21 @@ function pickPublicPrizeFields(prize) {
     weight: prize.weight,
     stock: prize.stock
   };
+}
+
+function sortValue(value) {
+  if (Array.isArray(value)) {
+    return value.map(sortValue);
+  }
+
+  if (value && typeof value === "object") {
+    return Object.keys(value)
+      .sort()
+      .reduce((result, key) => {
+        result[key] = sortValue(value[key]);
+        return result;
+      }, {});
+  }
+
+  return value;
 }
