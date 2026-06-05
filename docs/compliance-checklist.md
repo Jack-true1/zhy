@@ -1,29 +1,29 @@
 # Compliance and Fairness Checklist
 
-这个清单帮助开发者在把抽奖能力接入真实活动前，检查常见的公平性、隐私和运营问题。
+This checklist helps developers review common fairness, privacy, and operational issues before connecting lucky draw logic to a real campaign.
 
-## 活动前
+## Before the campaign
 
-- 明确活动主办方、活动时间、参与资格和奖品说明。
-- 明确每个用户的参与次数、中奖次数和异常处理方式。
-- 固定奖品配置、库存、权重和随机种子，并保存配置指纹。
-- 避免在前端暴露可被篡改的核心抽奖参数。
-- 明确收货信息的收集目的、保存期限和删除方式。
+- Define the campaign organizer, campaign period, eligibility rules, and prize details.
+- Define each user's participation limit, win limit, and exception handling process.
+- Freeze prize configuration, inventory, weights, and random seed, then save the configuration fingerprint.
+- Avoid exposing tamperable core draw parameters on the frontend.
+- Define why shipping information is collected, how long it is retained, and how it can be deleted.
 
-## 活动中
+## During the campaign
 
-- 每次抽奖都记录用户 ID、奖品 ID、抽奖时间、活动 ID 和结果原因。
-- 对库存扣减使用事务或原子操作，避免并发超发。
-- 对同一用户、同一设备、同一手机号等风险维度做限频。
-- 保留异常日志，方便后续核对。
+- Record the user ID, prize ID, draw time, campaign ID, and result reason for every draw.
+- Use transactions or atomic operations for inventory deduction to avoid overselling in concurrent requests.
+- Apply rate limits across risk dimensions such as user, device, and phone number.
+- Keep exception logs for later review.
 
-## 活动后
+## After the campaign
 
-- 导出抽奖记录和审计快照。
-- 核对剩余库存和中奖记录数量。
-- 按隐私政策处理手机号、地址等敏感信息。
-- 对外公布必要的中奖信息时，应脱敏处理。
+- Export draw records and audit snapshots.
+- Verify remaining inventory and the number of winning records.
+- Handle sensitive data such as phone numbers and addresses according to your privacy policy.
+- Mask personal information before publishing any necessary winner information.
 
-## 非目标
+## Non-goals
 
-Lucky Draw Kit 不替代法律意见，也不负责活动审批、平台审核、支付、物流或用户身份验证。
+Lucky Draw Kit does not replace legal advice and does not handle campaign approval, platform review, payments, logistics, or user identity verification.

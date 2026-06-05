@@ -1,34 +1,34 @@
 # Lucky Draw Kit
 
-一个轻量、无依赖的抽奖核心库，适合 Web、小程序、Node.js 后端使用。
+A lightweight, dependency-free lucky draw engine for Web apps, mini apps, and Node.js services.
 
-项目目标是给中小团队提供一个可复现、可审计、容易二次开发的抽奖基础能力，减少每个活动项目重复手写抽奖逻辑带来的公平性、库存和记录问题。
+The project aims to give small and mid-sized teams a reproducible, auditable, and easy-to-extend foundation for lucky draw campaigns. It helps reduce the fairness, inventory, and record-keeping issues that often appear when every campaign rewrites its own draw logic.
 
-它可以帮助你实现：
+It helps you implement:
 
-- 按权重抽奖
-- 奖品库存控制
-- 用户中奖次数限制
-- 可复现的种子随机
-- 可落库的抽奖记录
-- 抽奖审计快照
-- TypeScript 类型声明
+- Weighted random draws
+- Prize inventory control
+- Per-user win limits
+- Reproducible seeded randomness
+- Draw records that can be persisted
+- Audit snapshots for draw results
+- TypeScript type declarations
 
-> 这个项目只提供抽奖核心逻辑。真实上线时，请按业务所在地要求处理活动规则公示、奖品发放、用户隐私、反作弊和合规审查。
+> This project only provides the core draw logic. Before using it in production, handle campaign rule disclosure, prize fulfillment, user privacy, anti-abuse controls, and compliance review according to your business and jurisdiction.
 
-## 安装
+## Installation
 
 ```bash
 npm install lucky-draw-kit
 ```
 
-本地开发也可以直接克隆后运行：
+For local development, clone the repository and run:
 
 ```bash
 npm test
 ```
 
-## 快速使用
+## Quick Start
 
 ```js
 import { createAuditSnapshot, drawBatch } from "lucky-draw-kit";
@@ -36,8 +36,8 @@ import { createAuditSnapshot, drawBatch } from "lucky-draw-kit";
 const result = drawBatch({
   seed: "2026-summer-event",
   prizes: [
-    { id: "phone", name: "手机", weight: 1, stock: 1 },
-    { id: "coupon", name: "优惠券", weight: 99, stock: 100 }
+    { id: "phone", name: "Phone", weight: 1, stock: 1 },
+    { id: "coupon", name: "Coupon", weight: 99, stock: 100 }
   ],
   participants: [
     { id: "user_001" },
@@ -61,66 +61,66 @@ console.log(audit.fingerprint);
 
 ### `drawOne(prizes, options)`
 
-从奖品列表中抽取一个奖品。库存为 `0` 的奖品不会被抽中。
+Draws one prize from the prize list. Prizes with `0` stock are never selected.
 
 ### `drawBatch(options)`
 
-按参与用户列表批量抽奖，并返回抽奖记录和剩余库存。
+Runs a batch draw for a participant list and returns draw records plus remaining inventory.
 
-参数：
+Parameters:
 
-- `prizes`: 奖品列表
-- `participants`: 参与用户列表
-- `seed`: 随机种子，用于复现结果
-- `maxWinsPerUser`: 每个用户最多中奖次数，默认 `1`
+- `prizes`: Prize list
+- `participants`: Participant list
+- `seed`: Random seed for reproducible results
+- `maxWinsPerUser`: Maximum wins per user, defaults to `1`
 
 ### `createSeededRandom(seed)`
 
-创建一个可复现的伪随机函数，方便测试和审计。
+Creates a reproducible pseudo-random function for testing and audit workflows.
 
 ### `createAuditSnapshot(drawResult, metadata)`
 
-根据批量抽奖结果生成审计快照，包含记录数量、剩余库存和稳定指纹。适合落库、导出或和活动公告一起归档。
+Creates an audit snapshot from a batch draw result, including record count, remaining inventory, and a stable fingerprint. Useful for database storage, exports, or campaign archives.
 
 ### `createFingerprint(value)`
 
-为任意 JSON 兼容数据生成稳定指纹。这个指纹用于快速比对配置和结果是否被修改，不等同于加密签名。
+Creates a stable fingerprint for any JSON-compatible value. The fingerprint is useful for quickly checking whether configuration or results changed. It is not a cryptographic signature.
 
 ### `stableStringify(value)`
 
-按 key 排序后序列化 JSON 兼容数据，方便审计和测试。
+Serializes JSON-compatible data with sorted object keys for audit and testing.
 
 ### `validatePrizes(prizes)`
 
-校验并标准化奖品配置。
+Validates and normalizes prize configuration.
 
-## 奖品格式
+## Prize Format
 
 ```js
 {
   id: "coupon",
-  name: "优惠券",
+  name: "Coupon",
   weight: 100,
   stock: 50
 }
 ```
 
-## 适合场景
+## Use Cases
 
-- 电商抽奖活动
-- 小程序抽奖
-- 会员福利活动
-- 内部年会抽奖
-- 营销活动原型
+- E-commerce lucky draw campaigns
+- Mini app lucky draws
+- Member benefit campaigns
+- Internal event raffles
+- Marketing campaign prototypes
 
-## 项目文档
+## Project Documentation
 
-- [合规和公平性清单](./docs/compliance-checklist.md)
-- [项目影响说明](./docs/project-impact.md)
-- [维护路线图](./ROADMAP.md)
-- [贡献指南](./CONTRIBUTING.md)
-- [安全政策](./SECURITY.md)
+- [Compliance and fairness checklist](./docs/compliance-checklist.md)
+- [Project impact](./docs/project-impact.md)
+- [Roadmap](./ROADMAP.md)
+- [Contributing guide](./CONTRIBUTING.md)
+- [Security policy](./SECURITY.md)
 
-## 开源协议
+## License
 
 MIT
